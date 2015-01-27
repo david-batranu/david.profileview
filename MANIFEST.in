@@ -1,0 +1,6 @@
+recursive-include david *
+global-exclude *pyc
+include docs/*
+include version.txt
+
+global-include *.mo

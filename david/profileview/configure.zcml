@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:cmf="http://namespaces.zope.org/cmf"
+    i18n_domain="david">
+
+    <includeDependencies package="." />
+
+    <five:registerPackage package="." initialize=".initialize" />
+
+    <include package="Products.CMFCore" />
+
+    <include file="profiles.zcml" />
+    <include package=".browser" />
+
+</configure>

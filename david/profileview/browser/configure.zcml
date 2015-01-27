@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="david">
+
+    <browser:page
+        name="profileview"
+        for="*"
+        class=".profileview.ProfileView"
+        attribute="main"
+        layer="david.profileview.interfaces.IProfileViewInstalled"
+        permission="zope2.View"
+        />
+
+</configure>
