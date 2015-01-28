@@ -9,7 +9,7 @@
         class=".profileview.ProfileView"
         attribute="main"
         layer="david.profileview.interfaces.IProfileViewInstalled"
-        permission="zope2.View"
+        permission="cmf.ManagePortal"
         />
 
 </configure>
