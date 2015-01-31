@@ -1,6 +1,9 @@
+import os
+import pstats
 import cProfile
 import marshal
 import json
+import tempfile
 from StringIO import StringIO
 from Products.Five.browser import BrowserView
 
@@ -41,7 +44,7 @@ class ProfileView(BrowserView):
         profiler.runcall(getattr(self.context, target), **kwargs)
         return profiler
 
-    def main(self, target=None, **kwargs):
+    def run_profile(self, target=None, **kwargs):
         if 'target' in self.request:
             target = self.request.get('target')
 
@@ -49,9 +52,68 @@ class ProfileView(BrowserView):
             kwargs = json.loads(self.request.get('kwargs', '{}'))
 
         if target is not None:
-            profile = self.targeted(target, **kwargs)
+            return (self.targeted(target, **kwargs), target)
         else:
-            profile = self.default(**kwargs)
+            return (self.default(**kwargs), '')
 
+    def main(self):
+        profile, target = self.run_profile()
         return self.download(profile, name=target)
+
+    def make_temp(self):
+        profile, name = self.run_profile()
+        handle, path = tempfile.mkstemp('.profile', name + '_')
+        profile.dump_stats(path)
+        os.close(handle)
+        return path
+
+    def query_stats(self, stats, line):
+        command = [x.strip() for x in line.strip().split(' ')]
+        cmd, qargs = command[0], command[1:]
+        qargs = [int(arg) if arg.isdigit() else arg for arg in qargs]
+
+        if cmd == 'sort':
+            stats.sort_stats(*qargs)
+        elif cmd == 'reverse':
+            stats.reverse_order()
+        elif cmd == 'strip':
+            stats.strip_dirs()
+        elif cmd in ['callers', 'callees', 'stats']:
+            return cmd, qargs
+
+    def ajax(self):
+        path = self.request.get('path', '')
+        query = json.loads(self.request.get('query', '[]'))
+
+        if not path:
+            path = self.make_temp()
+
+        stats_out = StringIO()
+        stats = pstats.Stats(path, stream=stats_out)
+
+        query_result = ('stats', '')
+        for line in query:
+            query_result = self.query_stats(stats, line)
+            if query_result:
+                break
+
+        qcmd, qargs = query_result
+        if qcmd == 'callers':
+            stats.print_callers(*qargs)
+        elif qcmd == 'callees':
+            stats.print_callees(*qargs)
+        elif qcmd == 'stats':
+            stats.print_stats(*qargs)
+
+        stats_out.seek(0)
+
+        result = {
+            'profile': path,
+            'data': stats_out.read()
+        }
+
+        return json.dumps(result)
+
+
+
 
