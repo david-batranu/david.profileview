@@ -1,24 +1,38 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain="david">
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="david">
 
-    <browser:page
-        name="profileview"
-        for="*"
-        class=".profileview.ProfileView"
-        attribute="main"
-        layer="david.profileview.interfaces.IProfileViewInstalled"
-        permission="cmf.ManagePortal"
-        />
+  <browser:page
+    name="profileview"
+    for="*"
+    class=".profileview.ProfileView"
+    attribute="main"
+    layer="david.profileview.interfaces.IProfileViewInstalled"
+    permission="cmf.ManagePortal"
+    />
 
-    <browser:page
-        name="profileview.json"
-        for="*"
-        class=".profileview.ProfileView"
-        attribute="ajax"
-        layer="david.profileview.interfaces.IProfileViewInstalled"
-        permission="cmf.ManagePortal"
-        />
+  <browser:page
+    name="profileview.json"
+    for="*"
+    class=".profileview.ProfileView"
+    attribute="ajax"
+    layer="david.profileview.interfaces.IProfileViewInstalled"
+    permission="cmf.ManagePortal"
+    />
+
+  <browser:page
+    name="profileview.ajax"
+    for="*"
+    class=".profileview.ProfileView"
+    template="./templates/ajax.pt"
+    layer="david.profileview.interfaces.IProfileViewInstalled"
+    permission="cmf.ManagePortal"
+    />
+
+  <browser:resourceDirectory
+    name="david.profileview.resources"
+    directory="./resources/"
+    />
 
 </configure>

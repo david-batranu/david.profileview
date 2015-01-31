@@ -54,7 +54,7 @@ class ProfileView(BrowserView):
         if target is not None:
             return (self.targeted(target, **kwargs), target)
         else:
-            return (self.default(**kwargs), '')
+            return (self.default(**kwargs), self.context.__name__)
 
     def main(self):
         profile, target = self.run_profile()
@@ -91,11 +91,14 @@ class ProfileView(BrowserView):
         stats_out = StringIO()
         stats = pstats.Stats(path, stream=stats_out)
 
-        query_result = ('stats', '')
+        query_result = None
         for line in query:
             query_result = self.query_stats(stats, line)
             if query_result:
                 break
+
+        if query_result is None:
+            query_result = ('stats', '')
 
         qcmd, qargs = query_result
         if qcmd == 'callers':

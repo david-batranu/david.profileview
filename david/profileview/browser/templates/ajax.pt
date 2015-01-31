@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title><span tal:replace="here/title_or_id"/> - Profile view</title>
+    <script type="text/javascript" tal:attributes="src string:${here/absolute_url}/++resource++david.profileview.resources/angular/angular.min.js"></script>
+    <script type="text/javascript" tal:attributes="src string:${here/absolute_url}/++resource++david.profileview.resources/angular/angular-resource.min.js"></script>
+    <script type="text/javascript" tal:attributes="src string:${here/absolute_url}/++resource++david.profileview.resources/angular/angular-route.min.js"></script>
+    <script type="text/javascript" tal:attributes="src string:${here/absolute_url}/++resource++david.profileview.resources/profileview.js"></script>
+  </head>
+  <body>
+    <h1>Profile view</h1>
+
+    <div ng-app="app" ng-controller="ProfileController">
+      <div class="query">
+        <div ng-repeat="q in query track by $index">{{q}}</div>
+      </div>
+      <input id="newentry" type="text" autofocus="autofocus" ng-model="new_entry" ng-keydown="on_enter($event)"/>
+      <button type="button" ng-click="execute_query()">Execute</button>
+      <button type="button" ng-click="clear_query()">Clear query</button>
+      <pre>{{profile}}</pre>
+    </div>
+
+  </body>
+
+</html>
