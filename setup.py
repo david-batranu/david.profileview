@@ -24,6 +24,7 @@ setup(name='david.profileview',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'plone.api'
       ],
       entry_points="""
       # -*- Entry points: -*-

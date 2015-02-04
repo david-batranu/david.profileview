@@ -7,6 +7,8 @@ import tempfile
 from StringIO import StringIO
 from Products.Five.browser import BrowserView
 
+from plone import api
+
 
 class ProfileView(BrowserView):
 
@@ -117,6 +119,13 @@ class ProfileView(BrowserView):
 
         return json.dumps(result)
 
+    @property
+    def site_url(self):
+        return api.portal.get().absolute_url()
 
-
-
+    @property
+    def context_name(self):
+        try:
+            return self.request.get('target',  self.context.__name__)
+        except:
+            return 'Unknown context'

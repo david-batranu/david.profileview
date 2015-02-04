@@ -1,13 +1,13 @@
-<html>
+<html tal:define="site_url python:view.site_url; context_name python:view.context_name">
   <head>
-    <title><span tal:replace="here/title_or_id"/> - Profile view</title>
-    <script type="text/javascript" tal:attributes="src string:${here/absolute_url}/++resource++david.profileview.resources/angular/angular.min.js"></script>
-    <script type="text/javascript" tal:attributes="src string:${here/absolute_url}/++resource++david.profileview.resources/angular/angular-resource.min.js"></script>
-    <script type="text/javascript" tal:attributes="src string:${here/absolute_url}/++resource++david.profileview.resources/angular/angular-route.min.js"></script>
-    <script type="text/javascript" tal:attributes="src string:${here/absolute_url}/++resource++david.profileview.resources/profileview.js"></script>
+    <title><span tal:replace="context_name"/> - Profile view</title>
+    <script type="text/javascript" tal:attributes="src string:${site_url}/++resource++david.profileview.resources/angular/angular.min.js"></script>
+    <script type="text/javascript" tal:attributes="src string:${site_url}/++resource++david.profileview.resources/angular/angular-resource.min.js"></script>
+    <script type="text/javascript" tal:attributes="src string:${site_url}/++resource++david.profileview.resources/angular/angular-route.min.js"></script>
+    <script type="text/javascript" tal:attributes="src string:${site_url}/++resource++david.profileview.resources/profileview.js"></script>
   </head>
   <body>
-    <h1>Profile view</h1>
+    <h1>Profile view - <span tal:replace="context_name"/></h1>
 
     <div ng-app="app" ng-controller="ProfileController">
       <div class="query">
