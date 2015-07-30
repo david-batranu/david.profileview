@@ -43,7 +43,13 @@ class ProfileView(BrowserView):
 
     def targeted(self, target, **kwargs):
         profiler = cProfile.Profile()
-        profiler.runcall(getattr(self.context, target), **kwargs)
+
+        try:
+            profiler.runcall(getattr(self.context, target), **kwargs)
+        except AttributeError:
+            view = self.context.restrictedTraverse(target)
+            profiler.runcall(view, **kwargs)
+
         return profiler
 
     def run_profile(self, target=None, **kwargs):
