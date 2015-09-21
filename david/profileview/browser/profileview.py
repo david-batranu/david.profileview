@@ -10,6 +10,14 @@ from Products.Five.browser import BrowserView
 from plone import api
 
 
+def jsonify(request, data, cache=False):
+    header = request.RESPONSE.setHeader
+    header("Content-Type", "application/json")
+    if cache:
+        header("Expires", "Sun, 17-Jan-2038 19:14:07 GMT")
+    return json.dumps(data, indent=2, sort_keys=True)
+
+
 class ProfileView(BrowserView):
 
     def prepare_download(self, profile):
@@ -123,7 +131,7 @@ class ProfileView(BrowserView):
             'data': stats_out.read()
         }
 
-        return json.dumps(result)
+        return jsonify(self.request, result)
 
     @property
     def site_url(self):
