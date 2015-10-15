@@ -20,6 +20,8 @@ app.controller('ProfileController', ['$scope', '$location', 'ProfileFactory', fu
   $scope.path = '';
   $scope.query = [];
 
+  $scope.params = undefined;
+
   var load_profile = function(callback){
     var query = {
       target: $location.search().target,
@@ -27,6 +29,8 @@ app.controller('ProfileController', ['$scope', '$location', 'ProfileFactory', fu
       path: $scope.path,
       query: JSON.stringify($scope.query)
     };
+
+    $scope.params = query;
 
     ProfileFactory(query).get(function(response){
       $scope.path = response.profile;

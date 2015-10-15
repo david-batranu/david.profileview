@@ -10,6 +10,14 @@
     <h1>Profile view - <span tal:replace="context_name"/></h1>
 
     <div ng-app="app" ng-controller="ProfileController">
+
+      <dl>
+        <dt ng-show="params.target">Target</dt>
+        <dd>{{params.target}}</dd>
+        <dt ng-show="params.kwargs">kwargs</dt>
+        <dd>{{params.kwargs}}</dd>
+      </dl>
+
       <div class="query">
         <div ng-repeat="q in query track by $index">{{q}}</div>
       </div>
