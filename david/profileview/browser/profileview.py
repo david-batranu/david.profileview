@@ -1,10 +1,12 @@
+import cProfile
+import json
+import marshal
 import os
 import pstats
-import cProfile
-import marshal
-import json
 import tempfile
-from StringIO import StringIO
+
+from six import StringIO
+
 from Products.Five.browser import BrowserView
 
 from plone import api
@@ -19,7 +21,6 @@ def jsonify(request, data, cache=False):
 
 
 class ProfileView(BrowserView):
-
     def prepare_download(self, profile):
         profile.create_stats()
         dump = marshal.dumps(profile.stats)
@@ -31,15 +32,15 @@ class ProfileView(BrowserView):
 
         return stream
 
-    def set_headers(self, name=''):
+    def set_headers(self, name=""):
         self.request.response.setHeader(
-            'Content-Type', 'application/octet-steam')
+            "Content-Type", "application/octet-steam"
+        )
         filename = name or self.context.__name__
-        content_disp = 'attachment; filename={0}.profile'.format(filename)
-        self.request.response.setHeader(
-            'Content-Disposition', content_disp)
+        content_disp = "attachment; filename={0}.profile".format(filename)
+        self.request.response.setHeader("Content-Disposition", content_disp)
 
-    def download(self, profile, name=''):
+    def download(self, profile, name=""):
         stream = self.prepare_download(profile)
         self.set_headers(name)
         return stream.read()
@@ -61,11 +62,11 @@ class ProfileView(BrowserView):
         return profiler
 
     def run_profile(self, target=None, **kwargs):
-        if 'target' in self.request:
-            target = self.request.get('target')
+        if "target" in self.request:
+            target = self.request.get("target")
 
-        if 'kwargs' in self.request:
-            kwargs = json.loads(self.request.get('kwargs', '{}'))
+        if "kwargs" in self.request:
+            kwargs = json.loads(self.request.get("kwargs", "{}"))
 
         if target is not None:
             return (self.targeted(target, **kwargs), target)
@@ -78,28 +79,28 @@ class ProfileView(BrowserView):
 
     def make_temp(self):
         profile, name = self.run_profile()
-        handle, path = tempfile.mkstemp('.profile', name + '_')
+        handle, path = tempfile.mkstemp(".profile", name + "_")
         profile.dump_stats(path)
         os.close(handle)
         return path
 
     def query_stats(self, stats, line):
-        command = [x.strip() for x in line.strip().split(' ')]
+        command = [x.strip() for x in line.strip().split(" ")]
         cmd, qargs = command[0], command[1:]
         qargs = [int(arg) if arg.isdigit() else arg for arg in qargs]
 
-        if cmd == 'sort':
+        if cmd == "sort":
             stats.sort_stats(*qargs)
-        elif cmd == 'reverse':
+        elif cmd == "reverse":
             stats.reverse_order()
-        elif cmd == 'strip':
+        elif cmd == "strip":
             stats.strip_dirs()
-        elif cmd in ['callers', 'callees', 'stats']:
+        elif cmd in ["callers", "callees", "stats"]:
             return cmd, qargs
 
     def ajax(self):
-        path = self.request.get('path', '')
-        query = json.loads(self.request.get('query', '[]'))
+        path = self.request.get("path", "")
+        query = json.loads(self.request.get("query", "[]"))
 
         if not path:
             path = self.make_temp()
@@ -114,22 +115,19 @@ class ProfileView(BrowserView):
                 break
 
         if query_result is None:
-            query_result = ('stats', '')
+            query_result = ("stats", "")
 
         qcmd, qargs = query_result
-        if qcmd == 'callers':
+        if qcmd == "callers":
             stats.print_callers(*qargs)
-        elif qcmd == 'callees':
+        elif qcmd == "callees":
             stats.print_callees(*qargs)
-        elif qcmd == 'stats':
+        elif qcmd == "stats":
             stats.print_stats(*qargs)
 
         stats_out.seek(0)
 
-        result = {
-            'profile': path,
-            'data': stats_out.read()
-        }
+        result = {"profile": path, "data": stats_out.read()}
 
         return jsonify(self.request, result)
 
@@ -140,6 +138,6 @@ class ProfileView(BrowserView):
     @property
     def context_name(self):
         try:
-            return self.request.get('target',  self.context.__name__)
+            return self.request.get("target", self.context.__name__)
         except:
-            return 'Unknown context'
+            return "Unknown context"
